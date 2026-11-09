@@ -1,11 +1,16 @@
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
+import hashlib
+import bcrypt
 import jwt
-from passlib.context import CryptContext
 from app.core.config import settings
 
-# CryptContext configured with bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+PASSWORD_HASH_PREFIX = "$bcrypt-sha256$"
+
+
+def _password_bytes(password: str) -> bytes:
+    """Hash the full password before bcrypt applies its 72-byte limit."""
+    return hashlib.sha256(password.encode("utf-8")).digest()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -13,7 +18,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Verify a plain password against the hashed password.
     """
     try:
-        return pwd_context.verify(plain_password, hashed_password)
+        if hashed_password.startswith(PASSWORD_HASH_PREFIX):
+            hashed_password = hashed_password[len(PASSWORD_HASH_PREFIX) :]
+            password = _password_bytes(plain_password)
+        else:
+            password = plain_password.encode("utf-8")
+            if len(password) > 72:
+                return False
+        return bcrypt.checkpw(password, hashed_password.encode("utf-8"))
     except Exception:
         return False
 
@@ -22,7 +34,8 @@ def get_password_hash(password: str) -> str:
     """
     Hash a password using bcrypt.
     """
-    return pwd_context.hash(password)
+    hashed = bcrypt.hashpw(_password_bytes(password), bcrypt.gensalt()).decode("utf-8")
+    return f"{PASSWORD_HASH_PREFIX}{hashed}"
 
 
 def create_access_token(
