@@ -29,6 +29,7 @@ import {
   FileText,
   Check,
   MessageSquare,
+  Map,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import dynamic from "next/dynamic";
@@ -54,6 +55,11 @@ const InterviewQuestionsView = dynamic(
 const HiringSimulatorView = dynamic(
   () => import("@/components/dashboard/HiringSimulatorView").then((mod) => mod.HiringSimulatorView),
   { ssr: false, loading: () => <TabLoadingSkeleton label="Hiring Simulator" /> }
+);
+
+const RoleRoadmapsView = dynamic(
+  () => import("@/components/dashboard/RoleRoadmapsView").then((mod) => mod.RoleRoadmapsView),
+  { ssr: false, loading: () => <TabLoadingSkeleton label="Career Roadmaps" /> }
 );
 
 const ATSResumeCheckerView = dynamic(
@@ -429,6 +435,7 @@ export function DashboardContent({ initialTab }: DashboardContentProps) {
     const rawTab = searchParams.get("tab")?.toLowerCase();
     const queryTab = rawTab as DashboardTab | null;
 
+    if (path.includes("/dashboard/roadmaps") || path.includes("/roadmaps") || queryTab === "roadmaps") return "roadmaps";
     if (path.includes("/hiring-simulator") || path.includes("/simulator") || queryTab === "simulator") return "simulator";
     if (path.includes("/dashboard/interviewprep") || queryTab === "interviewprep") return "interviewprep";
     if (path.includes("/dashboard/interview") || queryTab === "interview") return "interviewprep";
@@ -1758,6 +1765,13 @@ export function DashboardContent({ initialTab }: DashboardContentProps) {
                       <div className="space-y-2">
                         {[
                           {
+                            name: "Career Roadmaps",
+                            solved: `6 Roles Available`,
+                            percentage: `W3Schools`,
+                            icon: Map,
+                            tab: "roadmaps" as DashboardTab,
+                          },
+                          {
                             name: "Interview Prep Bank",
                             solved: `9/9 domains`,
                             percentage: `100%`,
@@ -1833,6 +1847,11 @@ export function DashboardContent({ initialTab }: DashboardContentProps) {
                 )}
               </div>
             </div>
+          )}
+
+          {/* Active Tab: Role Career Roadmaps */}
+          {activeTab === "roadmaps" && (
+            <RoleRoadmapsView onBackToDashboard={() => handleSelectTab("dashboard")} />
           )}
 
           {/* Active Tab: Role-Based Hiring Simulator */}

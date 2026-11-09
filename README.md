@@ -41,6 +41,14 @@ Comprehensive syllabus navigation covering 148 verified topics across Operating 
 
 ---
 
+### 6. Interactive Role Career Roadmaps & W3Schools Winding Paths
+Winding milestone roadmaps calibrated for engineering specializations (Frontend, Backend, Full Stack, AI/ML, DevOps, Android) with direct links to official W3Schools documentation and step-by-step progress tracking.
+
+![Role Roadmaps Catalog](docs/screenshots/role-roadmaps.png)
+![Frontend Winding Roadmap Path](docs/screenshots/role-roadmap-path.png)
+
+---
+
 ## Architectural Highlights
 
 ```mermaid
@@ -103,6 +111,12 @@ flowchart TD
   - Object-Oriented Programming (23 modules)
   - Modern Computer Architecture (27 modules)
 - **Interactive Collapsible Navigation**: Persistent state toggle remembering candidate expansion preferences across sessions.
+
+### 6. Interactive Role Career Roadmaps & W3Schools Integration
+- **Role-Calibrated Curricula**: Tailored milestone learning paths for 6 engineering roles: Frontend Developer, Backend Developer, Full Stack Developer, AI & ML Engineer, DevOps & Cloud Engineer, and Android Developer.
+- **Winding S-Curve Railway Visualizer**: Dynamic SVG cubic Bezier path connecting milestone nodes with animated status indicators ("YOU'RE HERE" pin, radial completion arcs).
+- **Verified W3Schools Learning Links**: Direct external launch to official W3Schools tutorials for each milestone technology (HTML5, CSS3, JavaScript, TypeScript, React, Python, SQL, etc.).
+- **Progress Tracking**: Client-persisted milestone completion with live percentage indicators.
 
 ---
 

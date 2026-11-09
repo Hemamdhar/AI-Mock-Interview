@@ -24,6 +24,7 @@ import {
   Network,
   FolderGit2,
   Compass,
+  Map,
   MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -32,6 +33,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export type DashboardTab =
   | "dashboard"
+  | "roadmaps"
   | "simulator"
   | "interview"
   | "interviewprep"
@@ -228,6 +230,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <LayoutDashboard className="w-4 h-4 shrink-0 text-zinc-300" />
                   {!collapsed && <span>Dashboard</span>}
+                </button>
+
+                {/* Role Career Roadmaps */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSelectTab("roadmaps");
+                    onCloseMobile();
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md font-medium text-xs transition-colors cursor-pointer ${
+                    activeTab === "roadmaps"
+                      ? "bg-zinc-800 text-white border border-zinc-700/60 shadow-xs"
+                      : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850"
+                  }`}
+                  title={collapsed ? "Career Roadmaps" : undefined}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Map className="w-4 h-4 shrink-0 text-cyan-400" />
+                    {!collapsed && <span className="truncate">Career Roadmaps</span>}
+                  </div>
+                  {!collapsed && (
+                    <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">
+                      Roadmaps
+                    </span>
+                  )}
                 </button>
 
                 {/* Role-Based Hiring Simulator */}
