@@ -1,0 +1,13 @@
+{
+  "name": "ai-mock-interview",
+  "private": true,
+  "scripts": {
+    "db:studio": "npm --prefix frontend run db:studio",
+    "db:push": "npm --prefix frontend run db:push",
+    "db:pull": "npm --prefix frontend run db:pull",
+    "db:generate": "npm --prefix frontend run db:generate",
+    "db:seed": "npm --prefix frontend run db:seed",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && ./venv/bin/uvicorn app.main:app --reload --port 8000"
+  }
+}
