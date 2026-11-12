@@ -16,6 +16,7 @@ import {
   MapPin,
   ListFilter,
   Globe,
+  Activity,
 } from "lucide-react";
 import {
   recordProgressToggle,
@@ -30,6 +31,10 @@ import {
   LevelData,
   ROADMAP_LEVELS,
 } from "@/data/dsaRoadmap";
+import { LEVEL_SUB_METHODS, SubMethodData } from "@/data/dsaSubMethods";
+import { SubMethodRoadmapCanvas } from "@/components/dsa/SubMethodRoadmapCanvas";
+import { SubMethodModal } from "@/components/dsa/SubMethodModal";
+import { DSA2DLab } from "@/components/dsa/DSA2DLab";
 
 export type { SupportedLanguage, LeetCodeProblem, LevelData };
 export { ROADMAP_LEVELS };
@@ -40,7 +45,9 @@ export const DSAView: React.FC = () => {
   // Navigation / View state
   const [viewMode, setViewMode] = useState<"roadmap" | "list">("roadmap");
   const [selectedLevel, setSelectedLevel] = useState<LevelData | null>(null);
-  const [activeModalTab, setActiveModalTab] = useState<"video" | "resources" | "problems">("video");
+  const [selectedParentLevel, setSelectedParentLevel] = useState<LevelData | null>(null);
+  const [selectedSubMethod, setSelectedSubMethod] = useState<SubMethodData | null>(null);
+  const [activeModalTab, setActiveModalTab] = useState<"video" | "resources" | "problems" | "lab">("video");
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>("python");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -398,8 +405,23 @@ export const DSAView: React.FC = () => {
         )}
       </div>
 
-      {/* 3. ROADMAP VIEW CANVAS (All 18 Levels with S-curved winding track) */}
-      {viewMode === "roadmap" && (
+      {/* 3. SUB-METHOD SNAKE ROADMAP VIEW */}
+      {viewMode === "roadmap" && selectedParentLevel && (
+        <SubMethodRoadmapCanvas
+          parentLevel={selectedParentLevel}
+          subMethods={LEVEL_SUB_METHODS[selectedParentLevel.id] || []}
+          solvedProblemIds={solvedProblemIds}
+          onSelectSubMethod={(sm) => setSelectedSubMethod(sm)}
+          onBackToOverview={() => setSelectedParentLevel(null)}
+          onViewLevelOverview={() => {
+            setSelectedLevel(selectedParentLevel);
+            setActiveModalTab("video");
+          }}
+        />
+      )}
+
+      {/* 4. MAIN ROADMAP VIEW CANVAS (All 18 Levels with S-curved winding track) */}
+      {viewMode === "roadmap" && !selectedParentLevel && (
         <div className="relative rounded-lg bg-[#09090b] border border-zinc-800/90 shadow-2xl p-4 sm:p-8 overflow-hidden select-none">
           {/* Subtle Grid Matrix Background */}
           <div
@@ -461,8 +483,13 @@ export const DSAView: React.FC = () => {
                   }}
                   className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer z-10 focus:outline-none"
                   onClick={() => {
-                    setSelectedLevel(level);
-                    setActiveModalTab("video");
+                    const subs = LEVEL_SUB_METHODS[level.id];
+                    if (subs && subs.length > 0) {
+                      setSelectedParentLevel(level);
+                    } else {
+                      setSelectedLevel(level);
+                      setActiveModalTab("video");
+                    }
                   }}
                 >
                   {/* "YOU'RE HERE" Badge above current node */}
@@ -726,6 +753,19 @@ export const DSAView: React.FC = () => {
                   {selectedLevel.problems.length})
                 </span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveModalTab("lab")}
+                className={`inline-flex items-center gap-1.5 px-3 py-2 border-b-2 text-xs font-semibold transition-colors ${
+                  activeModalTab === "lab"
+                    ? "border-cyan-400 text-white"
+                    : "border-transparent text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Interactive Lab (2D)</span>
+              </button>
             </div>
 
             {/* Modal Scrollable Body */}
@@ -975,6 +1015,10 @@ export const DSAView: React.FC = () => {
                   </div>
                 </div>
               )}
+              {/* TAB 4: 2D INTERACTIVE LAB */}
+              {activeModalTab === "lab" && (
+                <DSA2DLab level={selectedLevel} />
+              )}
             </div>
 
             {/* Modal Footer */}
@@ -993,6 +1037,16 @@ export const DSAView: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 6. SUB-METHOD DETAIL & 2D INTERACTIVE LAB MODAL */}
+      {selectedSubMethod && (
+        <SubMethodModal
+          subMethod={selectedSubMethod}
+          onClose={() => setSelectedSubMethod(null)}
+          solvedProblemIds={solvedProblemIds}
+          onToggleProblemSolved={toggleProblemSolved}
+        />
       )}
     </div>
   );

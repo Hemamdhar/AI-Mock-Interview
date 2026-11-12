@@ -52,6 +52,7 @@ import {
   NETWORKS_REVISE_SECTIONS,
   NETWORKS_RECALL_QUESTIONS,
 } from "@/data/computerNetworksCurriculum";
+import { CoreCSVisualizer } from "@/components/subjects/CoreCSVisualizer";
 import {
   recordProgressToggle,
   broadcastProgressUpdate,
@@ -1577,40 +1578,16 @@ export const CoreCSView: React.FC<CoreCSViewProps> = ({
                 </section>
               )}
 
-              {/* System Architecture Diagram */}
-              {currentTopic.diagram && (
-                <section className="space-y-2 pt-2">
-                  <div className="flex items-center justify-between text-xs text-zinc-400 font-mono bg-[#111115] px-3.5 py-2 rounded-t-md border border-b-0 border-zinc-800">
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/60" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/60" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/60" />
-                      </div>
-                      <span className="font-semibold text-zinc-300 ml-1">System Architecture Diagram</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyCode(currentTopic.diagram!)}
-                      className="inline-flex items-center gap-1 text-[11px] text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                    >
-                      {copiedCode ? (
-                        <>
-                          <Check className="w-3 h-3 text-emerald-400" />
-                          <span className="text-emerald-400">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3" />
-                          <span>Copy Diagram</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                  <pre className="p-4 sm:p-5 rounded-b-md bg-[#070709] border border-zinc-800 text-xs font-mono text-zinc-300 overflow-x-auto leading-relaxed">
-                    {currentTopic.diagram}
-                  </pre>
-                </section>
+              {/* Interactive Visualizer & System Architecture Diagram */}
+              {(currentTopic.diagram ||
+                currentTopic.id.startsWith("dbms") ||
+                currentTopic.id.startsWith("os") ||
+                currentTopic.id.startsWith("cn") ||
+                currentTopic.id.startsWith("arch")) && (
+                <CoreCSVisualizer
+                  topic={currentTopic}
+                  subjectSlug={activeSubjectSlug}
+                />
               )}
 
               {/* Code Snippet with Copy Action */}
